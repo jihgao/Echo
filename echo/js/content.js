@@ -20,7 +20,7 @@
 	})();
 
 	window.addEventListener('message', function(message){
-	    console.log('message', 'comes from:', message.origin, message.data, +(new Date()) );
+	    console.log(window.location.host, 'received message which comes from:', message.origin, message.data );
 	});
 
 	window.fetch = (function(){
@@ -31,7 +31,7 @@
 	        if([].slice.call(args).length && args[0]){
 	            if(timer[args[0]]) clearTimeout(timer[args[0]]);
 	            timer[args[0]] = setTimeout(function(){
-	                console.log('fetching-request', 'comes from ', window.location.host, args[0], args[2], +(new Date()));
+	                console.log(window.location.host, 'is fetching data from', args[0], args[2]);
 	                delete timer[args[0]];
 	            }, delay);
 	        }
