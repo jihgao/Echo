@@ -1,5 +1,5 @@
 !(function(){
-	var messages_store = [], delay=0;
+	var messages_store = [], delay=0, is_pretty=true;
 	window.console.log = (function(){
 	    var timer;
 	    var plog = window.console.log;
@@ -20,22 +20,30 @@
 	})();
 
 	window.addEventListener('message', function(message){
-	    console.log(window.location.host, 'received message which comes from:', message.origin, message.data );
+		var out_parts = [window.location.host, 'received message which comes from:', message.origin, message.data];
+		if(is_pretty){
+			out_parts = out_parts.concat(['\n', JSON.stringify(message.data, null, 4), '\n']);
+		}
+		console.log.apply(null, out_parts);
 	});
 
 	window.fetch = (function(){
 	    var timer = {};
 	    var oldfetch = window.fetch;
 	    return function(){
-	        var args = arguments;
-	        if([].slice.call(args).length && args[0]){
+	        var args = [].slice.call(args);
+	        if(args.length && args[0]){
 	            if(timer[args[0]]) clearTimeout(timer[args[0]]);
 	            timer[args[0]] = setTimeout(function(){
-	                console.log(window.location.host, 'is fetching data from', args[0], args[2]);
+								  var out_parts = [window.location.host, 'is fetching data from', args[0], args[2]];
+									if(is_pretty){
+										out_parts = out_parts.concat(['\n', JSON.stringify(args[2], null, 4), '\n']);
+									}
+									console.log.apply(null, out_parts);
 	                delete timer[args[0]];
 	            }, delay);
 	        }
-	        return oldfetch.apply(this, arguments);
+	        return oldfetch.apply(this, args);
 	    }
 	})();
 })();
