@@ -26,24 +26,4 @@
 		}
 		console.log.apply(null, out_parts);
 	});
-
-	window.fetch = (function(){
-	    var timer = {};
-	    var oldfetch = window.fetch;
-	    return function(){
-	        var args = [].slice.call(args);
-	        if(args.length && args[0]){
-	            if(timer[args[0]]) clearTimeout(timer[args[0]]);
-	            timer[args[0]] = setTimeout(function(){
-								  var out_parts = [window.location.host, 'is fetching data from', args[0], args[2]];
-									if(is_pretty){
-										out_parts = out_parts.concat(['\n', JSON.stringify(args[2], null, 4), '\n']);
-									}
-									console.log.apply(null, out_parts);
-	                delete timer[args[0]];
-	            }, delay);
-	        }
-	        return oldfetch.apply(this, args);
-	    }
-	})();
 })();
